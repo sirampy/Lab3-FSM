@@ -1,3 +1,2 @@
-Create your design in this folder.
-
-Don't forget to copy new version of vbuddy.cpp and your port configuration file vbuddy.cfg to this folder.
+created A f1 style light sequence using a state machine<br>
+I believe it would be better to simply right shift eacch cycle instead of having loads of states (would only need 2 states: reset and counting), but this is how i interpreted the instructions

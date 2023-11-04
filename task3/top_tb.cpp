@@ -1,9 +1,6 @@
-I changed the to show a pulse instead of latching the lights on and off as i think its looks cooler as well as letting me set rst with oneshot vbdFlag()<br>
-finding an exact calibration was hard, but it was somewhere between 43 and 44. this value varied as my computer thermal throttled / other inconsistencies made the speed vary.
-```cpp
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "Vclktick.h"
+#include "Vtop.h"
 
 #include "vbuddy.cpp"     // include vbuddy code
 #define MAX_SIM_CYC 100000
@@ -15,16 +12,16 @@ int main(int argc, char **argv, char **env) {
 
   Verilated::commandArgs(argc, argv);
   // init top verilog instance
-  Vclktick * top = new Vclktick;
+  Vtop * top = new Vtop;
   // init trace dump
   Verilated::traceEverOn(true);
   VerilatedVcdC* tfp = new VerilatedVcdC;
   top->trace (tfp, 99);
-  tfp->open ("clktick.vcd");
+  tfp->open ("top.vcd");
  
   // init Vbuddy
   if (vbdOpen()!=1) return(-1);
-  vbdHeader("L3T2:Clktick");
+  vbdHeader("L3T3:f1(sorta)");
   vbdSetMode(1);        // Flag mode set to one-shot
 
   // initialize simulation inputs
@@ -43,7 +40,7 @@ int main(int argc, char **argv, char **env) {
     }
 
     // Display toggle neopixel
-    vbdBar(0xff*top->tick);
+    vbdBar(top->lights);
     // set up input signals of testbench
     top->rst = (simcyc < 2) | vbdFlag();    // assert reset for 1st cycle
     top->en = (simcyc > 2);
@@ -57,6 +54,3 @@ int main(int argc, char **argv, char **env) {
   tfp->close(); 
   exit(0);
 }
-```
-
-then I plluged teh clktck into the fsm.
